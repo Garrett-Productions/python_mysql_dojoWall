@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static',filename='/style.css') }}">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="custom-border d-flex justify-content-between align-items-center mx-5">
+        <h2 class="text-left p-2"> Coding Dojo Wall</h2>
+        <h2 class="text-right"> Welcome {{user.first_name}} </h2>
+        <a href='/logout' class="my-3"> Logout </a>
+    </div><br>
+    <div class="mx-auto text-center">
+        <h4 class="my-4">What's on Your Mind? Create a New Post</h4>
+        {% with messages = get_flashed_messages(category_filter=['post']) %}
+            {% if messages %}
+            <ul class="alert alert-warning" role="alert">
+                {% for message in messages %}
+                    <li class="text-danger">{{message}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <form action="/post_message" method="post" class="p-2 col-4 mx-auto bg-light text-dark mb-5 ">
+        <textarea name="content" style="height:90px; width:380px; margin-left:45px;"></textarea><br/>
+        <input type="submit" value="Publish" style="margin-left:195px;" class="btn btn-light btn-outline-primary">
+    </form><br>
+    <h3 class="custom-border-top text-left p-4 mx-5 text-center"> All Community Posts </h3><br/>
+    <table class="table mx-5">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Posted On</th>
+                <th scope='col'>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for post in all_posts %}
+            <tr>
+                <td>{{post.creator.first_name}} {{post.creator.last_name}}
+                <td>{{post.created_at.strftime(dtformat)}}
+                <td>{{post.content}}
+            {% if user.id == post.user_id %}
+                <a href="/delete_post/{{ post.id }}" class="p-5">Delete</a>
+            {% endif %}
+        {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+
